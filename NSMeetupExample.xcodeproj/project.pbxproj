@@ -21,6 +21,9 @@
 		2B987B3517B15DE500964797 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B987B3417B15DE500964797 /* ViewController.m */; };
 		2B987B3817B15DE500964797 /* ViewController_iPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2B987B3617B15DE500964797 /* ViewController_iPhone.xib */; };
 		2B987B3B17B15DE500964797 /* ViewController_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2B987B3917B15DE500964797 /* ViewController_iPad.xib */; };
+		2B987B4417B169C400964797 /* SimpleGLObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B987B4317B169C400964797 /* SimpleGLObject.m */; };
+		2B987B4717B16C3000964797 /* FlexiVertexBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B987B4617B16C3000964797 /* FlexiVertexBuffer.m */; };
+		2B987B4B17B178CB00964797 /* StartupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B987B4A17B178CB00964797 /* StartupViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,6 +46,12 @@
 		2B987B3417B15DE500964797 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		2B987B3717B15DE500964797 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ViewController_iPhone.xib; sourceTree = "<group>"; };
 		2B987B3A17B15DE500964797 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ViewController_iPad.xib; sourceTree = "<group>"; };
+		2B987B4217B169C400964797 /* SimpleGLObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimpleGLObject.h; sourceTree = "<group>"; };
+		2B987B4317B169C400964797 /* SimpleGLObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SimpleGLObject.m; sourceTree = "<group>"; };
+		2B987B4517B16C3000964797 /* FlexiVertexBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlexiVertexBuffer.h; sourceTree = "<group>"; };
+		2B987B4617B16C3000964797 /* FlexiVertexBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlexiVertexBuffer.m; sourceTree = "<group>"; };
+		2B987B4917B178CB00964797 /* StartupViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StartupViewController.h; sourceTree = "<group>"; };
+		2B987B4A17B178CB00964797 /* StartupViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StartupViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,8 +102,11 @@
 		2B987B1D17B15DE500964797 /* NSMeetupExample */ = {
 			isa = PBXGroup;
 			children = (
+				2B987B4817B16C3F00964797 /* OpenGL ES Helpers */,
 				2B987B2617B15DE500964797 /* AppDelegate.h */,
 				2B987B2717B15DE500964797 /* AppDelegate.m */,
+				2B987B4917B178CB00964797 /* StartupViewController.h */,
+				2B987B4A17B178CB00964797 /* StartupViewController.m */,
 				2B987B3317B15DE500964797 /* ViewController.h */,
 				2B987B3417B15DE500964797 /* ViewController.m */,
 				2B987B3617B15DE500964797 /* ViewController_iPhone.xib */,
@@ -116,6 +128,17 @@
 				2B987B2D17B15DE500964797 /* Default-568h@2x.png */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		2B987B4817B16C3F00964797 /* OpenGL ES Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				2B987B4217B169C400964797 /* SimpleGLObject.h */,
+				2B987B4317B169C400964797 /* SimpleGLObject.m */,
+				2B987B4517B16C3000964797 /* FlexiVertexBuffer.h */,
+				2B987B4617B16C3000964797 /* FlexiVertexBuffer.m */,
+			);
+			name = "OpenGL ES Helpers";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -188,6 +211,9 @@
 				2B987B2417B15DE500964797 /* main.m in Sources */,
 				2B987B2817B15DE500964797 /* AppDelegate.m in Sources */,
 				2B987B3517B15DE500964797 /* ViewController.m in Sources */,
+				2B987B4417B169C400964797 /* SimpleGLObject.m in Sources */,
+				2B987B4717B16C3000964797 /* FlexiVertexBuffer.m in Sources */,
+				2B987B4B17B178CB00964797 /* StartupViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

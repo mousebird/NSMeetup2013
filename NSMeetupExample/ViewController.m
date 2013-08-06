@@ -7,82 +7,17 @@
 //
 
 #import "ViewController.h"
+#import "SimpleGLObject.h"
+#import "FlexiVertexBuffer.h"
 
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
 
-// Uniform index.
-enum
-{
-    UNIFORM_MODELVIEWPROJECTION_MATRIX,
-    UNIFORM_NORMAL_MATRIX,
-    NUM_UNIFORMS
-};
-GLint uniforms[NUM_UNIFORMS];
-
-// Attribute index.
-enum
-{
-    ATTRIB_VERTEX,
-    ATTRIB_NORMAL,
-    NUM_ATTRIBUTES
-};
-
-GLfloat gCubeVertexData[216] = 
-{
-    // Data layout for each line below is:
-    // positionX, positionY, positionZ,     normalX, normalY, normalZ,
-    0.5f, -0.5f, -0.5f,        1.0f, 0.0f, 0.0f,
-    0.5f, 0.5f, -0.5f,         1.0f, 0.0f, 0.0f,
-    0.5f, -0.5f, 0.5f,         1.0f, 0.0f, 0.0f,
-    0.5f, -0.5f, 0.5f,         1.0f, 0.0f, 0.0f,
-    0.5f, 0.5f, -0.5f,          1.0f, 0.0f, 0.0f,
-    0.5f, 0.5f, 0.5f,         1.0f, 0.0f, 0.0f,
-    
-    0.5f, 0.5f, -0.5f,         0.0f, 1.0f, 0.0f,
-    -0.5f, 0.5f, -0.5f,        0.0f, 1.0f, 0.0f,
-    0.5f, 0.5f, 0.5f,          0.0f, 1.0f, 0.0f,
-    0.5f, 0.5f, 0.5f,          0.0f, 1.0f, 0.0f,
-    -0.5f, 0.5f, -0.5f,        0.0f, 1.0f, 0.0f,
-    -0.5f, 0.5f, 0.5f,         0.0f, 1.0f, 0.0f,
-    
-    -0.5f, 0.5f, -0.5f,        -1.0f, 0.0f, 0.0f,
-    -0.5f, -0.5f, -0.5f,       -1.0f, 0.0f, 0.0f,
-    -0.5f, 0.5f, 0.5f,         -1.0f, 0.0f, 0.0f,
-    -0.5f, 0.5f, 0.5f,         -1.0f, 0.0f, 0.0f,
-    -0.5f, -0.5f, -0.5f,       -1.0f, 0.0f, 0.0f,
-    -0.5f, -0.5f, 0.5f,        -1.0f, 0.0f, 0.0f,
-    
-    -0.5f, -0.5f, -0.5f,       0.0f, -1.0f, 0.0f,
-    0.5f, -0.5f, -0.5f,        0.0f, -1.0f, 0.0f,
-    -0.5f, -0.5f, 0.5f,        0.0f, -1.0f, 0.0f,
-    -0.5f, -0.5f, 0.5f,        0.0f, -1.0f, 0.0f,
-    0.5f, -0.5f, -0.5f,        0.0f, -1.0f, 0.0f,
-    0.5f, -0.5f, 0.5f,         0.0f, -1.0f, 0.0f,
-    
-    0.5f, 0.5f, 0.5f,          0.0f, 0.0f, 1.0f,
-    -0.5f, 0.5f, 0.5f,         0.0f, 0.0f, 1.0f,
-    0.5f, -0.5f, 0.5f,         0.0f, 0.0f, 1.0f,
-    0.5f, -0.5f, 0.5f,         0.0f, 0.0f, 1.0f,
-    -0.5f, 0.5f, 0.5f,         0.0f, 0.0f, 1.0f,
-    -0.5f, -0.5f, 0.5f,        0.0f, 0.0f, 1.0f,
-    
-    0.5f, -0.5f, -0.5f,        0.0f, 0.0f, -1.0f,
-    -0.5f, -0.5f, -0.5f,       0.0f, 0.0f, -1.0f,
-    0.5f, 0.5f, -0.5f,         0.0f, 0.0f, -1.0f,
-    0.5f, 0.5f, -0.5f,         0.0f, 0.0f, -1.0f,
-    -0.5f, -0.5f, -0.5f,       0.0f, 0.0f, -1.0f,
-    -0.5f, 0.5f, -0.5f,        0.0f, 0.0f, -1.0f
-};
-
 @interface ViewController () {
-    GLuint _program;
-    
     GLKMatrix4 _modelViewProjectionMatrix;
     GLKMatrix3 _normalMatrix;
     float _rotation;
     
-    GLuint _vertexArray;
-    GLuint _vertexBuffer;
+    NSMutableArray *_glObjects;
 }
 @property (strong, nonatomic) EAGLContext *context;
 @property (strong, nonatomic) GLKBaseEffect *effect;
@@ -107,6 +42,8 @@ GLfloat gCubeVertexData[216] =
     GLKView *view = (GLKView *)self.view;
     view.context = self.context;
     view.drawableDepthFormat = GLKViewDrawableDepthFormat24;
+    
+    _glObjects = [NSMutableArray array];
     
     [self setupGL];
 }
@@ -138,6 +75,105 @@ GLfloat gCubeVertexData[216] =
     // Dispose of any resources that can be recreated.
 }
 
+// Build the OpenGL constructs necessary to draw what's in the flexi buffer
+- (SimpleGLObject *)makeObjectFromFlexiBuffer:(FlexiVertexBuffer *)flexiBuffer
+{
+    GLuint vertexBuffer,vertexArray;
+
+    // We create the vertex buffer and fill it with data right here
+    glGenBuffers(1, &vertexBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+    glBufferData(GL_ARRAY_BUFFER, [flexiBuffer.vertices length], [flexiBuffer.vertices bytes], GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    
+    // Create a vertex array object and set up its internal state
+    glGenVertexArraysOES(1, &vertexArray);
+    glBindVertexArrayOES(vertexArray);
+    
+    // Everything in this block is work you'd normally have to do in the rendering loop.
+    // A vertex array object encapsulates this for you
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+        
+        glEnableVertexAttribArray(GLKVertexAttribPosition);
+        glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, flexiBuffer.vertexSize, BUFFER_OFFSET(0));
+        glEnableVertexAttribArray(GLKVertexAttribNormal);
+        glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, flexiBuffer.vertexSize, BUFFER_OFFSET(12));
+    }
+    
+    glBindVertexArrayOES(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    
+    // We'll keep track of the buffers and number of triangles here
+    SimpleGLObject *glObject = [[SimpleGLObject alloc] init];
+    glObject.vertexBuffer = vertexBuffer;
+    glObject.vertexArray = vertexArray;
+    glObject.numVertices = flexiBuffer.numVertices;
+    
+    return glObject;
+}
+
+// Create a single cube, much like the Apple test case
+- (void)setupSingleCube
+{
+    // A single cube, centered at the origin
+    float origin[3] = {0,0,0};
+    float size[3] = {1,1,1};
+    FlexiVertexBuffer *flexiBuffer = [FlexiVertexBuffer BufferWithCubeAt:origin sized:size];
+ 
+    SimpleGLObject *glObject = [self makeObjectFromFlexiBuffer:flexiBuffer];
+    [_glObjects addObject:glObject];
+}
+
+// Set up a bunch of cubes, one set of buffers per cube
+- (void)setupManyCubesManyBuffers:(int)numCubes
+{
+    for (unsigned int ii=0;ii<numCubes;ii++)
+    {
+        // Pick a random origin and size
+        float origin[3],size[3];
+        origin[0] = drand48();  origin[1] = drand48();  origin[2] = drand48();
+        size[0] = size[1] = size[2] = drand48()/10.0;
+        FlexiVertexBuffer *flexiBuffer = [FlexiVertexBuffer BufferWithCubeAt:origin sized:size];
+        
+        SimpleGLObject *glObject = [self makeObjectFromFlexiBuffer:flexiBuffer];
+        [_glObjects addObject:glObject];
+    }
+}
+
+// Set up a bunch of cubes, but create fewer buffers
+- (void)setupManyCubesFewBuffers:(int)numCubes
+{
+    FlexiVertexBuffer *flexiBuffer = [[FlexiVertexBuffer alloc] init];
+    
+    for (unsigned int ii=0;ii<numCubes;ii++)
+    {
+        // Pick a random origin and size
+        float origin[3],size[3];
+        origin[0] = drand48();  origin[1] = drand48();  origin[2] = drand48();
+        size[0] = size[1] = size[2] = drand48()/10.0;
+
+        // Add the cube to what we already have
+        [flexiBuffer addCubeAt:origin sized:size];
+        
+        // If the buffer gets too big, flush it out
+        if (flexiBuffer.numVertices > 32768)
+        {
+            SimpleGLObject *glObject = [self makeObjectFromFlexiBuffer:flexiBuffer];
+            [_glObjects addObject:glObject];            
+
+            flexiBuffer = [[FlexiVertexBuffer alloc] init];
+        }
+    }
+    
+    // Flush anything left over
+    if (flexiBuffer.numVertices > 0)
+    {
+        SimpleGLObject *glObject = [self makeObjectFromFlexiBuffer:flexiBuffer];
+        [_glObjects addObject:glObject];
+    }
+}
+
 - (void)setupGL
 {
     [EAGLContext setCurrentContext:self.context];
@@ -148,34 +184,43 @@ GLfloat gCubeVertexData[216] =
     
     glEnable(GL_DEPTH_TEST);
     
-    glGenVertexArraysOES(1, &_vertexArray);
-    glBindVertexArrayOES(_vertexArray);
-    
-    glGenBuffers(1, &_vertexBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(gCubeVertexData), gCubeVertexData, GL_STATIC_DRAW);
-    
-    glEnableVertexAttribArray(GLKVertexAttribPosition);
-    glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(0));
-    glEnableVertexAttribArray(GLKVertexAttribNormal);
-    glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(12));
-    
-    glBindVertexArrayOES(0);
+    switch (_testMode)
+    {
+        case SingleCube:
+            [self setupSingleCube];
+            break;
+        case MoreCubes:
+            [self setupManyCubesManyBuffers:200];
+            break;
+        case ManyCubesManyBuffers:
+            [self setupManyCubesManyBuffers:10000];
+            break;
+        case ManyCubesFewBuffers:
+            [self setupManyCubesFewBuffers:10000];
+            break;
+        case WholeLottaCubes:
+            [self setupManyCubesFewBuffers:50000];
+            break;
+        default:
+            break;
+    }
 }
 
 - (void)tearDownGL
 {
     [EAGLContext setCurrentContext:self.context];
     
-    glDeleteBuffers(1, &_vertexBuffer);
-    glDeleteVertexArraysOES(1, &_vertexArray);
+    // Tear down the buffers
+    for (SimpleGLObject *glObject in _glObjects)
+    {
+        GLuint vertexBuffer = glObject.vertexBuffer;
+        GLuint vertexArray = glObject.vertexArray;
+        glDeleteVertexArraysOES(1, &vertexArray);
+        glDeleteBuffers(1, &vertexBuffer);
+    }
+    [_glObjects removeAllObjects];
     
     self.effect = nil;
-    
-    if (_program) {
-        glDeleteProgram(_program);
-        _program = 0;
-    }
 }
 
 #pragma mark - GLKView and GLKViewController delegate methods
@@ -214,12 +259,16 @@ GLfloat gCubeVertexData[216] =
     glClearColor(0.65f, 0.65f, 0.65f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    glBindVertexArrayOES(_vertexArray);
-    
-    // Render the object with GLKit
-    [self.effect prepareToDraw];
-    
-    glDrawArrays(GL_TRIANGLES, 0, 36);
+    // Work through the vertex arrays (and their triangles)
+    for (SimpleGLObject *glObject in _glObjects)
+    {
+        glBindVertexArrayOES(glObject.vertexArray);
+        
+        // Render the object with GLKit
+        [self.effect prepareToDraw];
+        
+        glDrawArrays(GL_TRIANGLES, 0, glObject.numVertices);
+    }
 }
 
 @end

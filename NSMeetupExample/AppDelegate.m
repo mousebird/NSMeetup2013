@@ -7,8 +7,7 @@
 //
 
 #import "AppDelegate.h"
-
-#import "ViewController.h"
+#import "StartupViewController.h"
 
 @implementation AppDelegate
 
@@ -16,15 +15,10 @@
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
+    StartupViewController *startViewC = [[StartupViewController alloc] init];
+    _navC = [[UINavigationController alloc] initWithRootViewController:startViewC];
     
-    
-    // Override point for customization after application launch.
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        self.viewController = [[ViewController alloc] initWithNibName:@"ViewController_iPhone" bundle:nil];
-    } else {
-        self.viewController = [[ViewController alloc] initWithNibName:@"ViewController_iPad" bundle:nil];
-    }
-    self.window.rootViewController = self.viewController;
+    self.window.rootViewController = _navC;
     [self.window makeKeyAndVisible];
     return YES;
 }
