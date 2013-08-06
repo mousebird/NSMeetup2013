@@ -13,8 +13,6 @@
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
 
 @interface ViewController () {
-    GLKMatrix4 _modelViewProjectionMatrix;
-    GLKMatrix3 _normalMatrix;
     float _rotation;
     
     // These are the objects we're drawing
@@ -75,8 +73,6 @@
         }
         self.context = nil;
     }
-
-    // Dispose of any resources that can be recreated.
 }
 
 // Set up the vertex buffer we need to draw these triangles
@@ -130,7 +126,7 @@
 {
     // A single cube, centered at the origin
     float origin[3] = {0,0,0};
-    float size[3] = {1,1,1};
+    float size[3] = {0.75,0.75,0.75};
     FlexiVertexBuffer *flexiBuffer = [FlexiVertexBuffer BufferWithCubeAt:origin sized:size];
  
     SimpleGLObject *glObject = [self makeObjectFromFlexiBuffer:flexiBuffer];
@@ -227,7 +223,7 @@
                            // Add the cubes
                            [self setupManyCubesFewBuffers:numCubes];
 
-                           // Sleep two seconds
+                           // Sleep one second
                            usleep(1000000);
                        }
                        
@@ -266,11 +262,11 @@
             [self setupManyCubesFewBuffers:30000];
             break;
         case MeteredCubes:
-            // Add 6000 cubes 5 times
+            // Add 3000 cubes 8 times
             [self setupMeteredCubes:3000 times:8];
             break;
         case MeteredCubesMultiThread:
-            // Add 6000 cubes 5 times on another thread
+            // Add 3000 cubes 8 times on another thread
             [self setupMultithreadedMeteredCubes:3000 times:8];
             break;
         default:
@@ -312,16 +308,7 @@
     modelViewMatrix = GLKMatrix4Rotate(modelViewMatrix, _rotation, 1.0f, 1.0f, 1.0f);
     modelViewMatrix = GLKMatrix4Multiply(baseModelViewMatrix, modelViewMatrix);
     
-    self.effect.transform.modelviewMatrix = modelViewMatrix;
-    
-    // Compute the model view matrix for the object rendered with ES2
-    modelViewMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, 1.5f);
-    modelViewMatrix = GLKMatrix4Rotate(modelViewMatrix, _rotation, 1.0f, 1.0f, 1.0f);
-    modelViewMatrix = GLKMatrix4Multiply(baseModelViewMatrix, modelViewMatrix);
-    
-    _normalMatrix = GLKMatrix3InvertAndTranspose(GLKMatrix4GetMatrix3(modelViewMatrix), NULL);
-    
-    _modelViewProjectionMatrix = GLKMatrix4Multiply(projectionMatrix, modelViewMatrix);
+    self.effect.transform.modelviewMatrix = modelViewMatrix;    
     
     _rotation += self.timeSinceLastUpdate * 0.5f;
 }
