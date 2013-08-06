@@ -67,7 +67,13 @@
             cell.textLabel.text = @"Lots of cubes (10,000), few buffers";
             break;
         case WholeLottaCubes:
-            cell.textLabel.text = @"Lots of cubes (50,000), few buffers";
+            cell.textLabel.text = @"Lots of cubes (30,000), few buffers";
+            break;
+        case MeteredCubes:
+            cell.textLabel.text = @"Add cubes during rendering - on main thread";
+            break;
+        case MeteredCubesMultiThread:
+            cell.textLabel.text = @"Add cubes during rendering - on another thread";
             break;
         default:
             break;

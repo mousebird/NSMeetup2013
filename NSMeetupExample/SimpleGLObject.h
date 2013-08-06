@@ -22,4 +22,7 @@
 // The number of vertices we'll be drawing (3 * numTriangles)
 @property GLuint numVertices;
 
+// Size of the vertices
+@property GLuint vertexSize;
+
 @end

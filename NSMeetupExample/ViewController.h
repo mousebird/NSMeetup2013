@@ -10,7 +10,7 @@
 #import <GLKit/GLKit.h>
 
 // The various test modes for the demo
-typedef enum {SingleCube,MoreCubes,ManyCubesManyBuffers,ManyCubesFewBuffers,WholeLottaCubes,MaxTestModes} TestModes;
+typedef enum {SingleCube,MoreCubes,ManyCubesManyBuffers,ManyCubesFewBuffers,WholeLottaCubes,MeteredCubes,MeteredCubesMultiThread,MaxTestModes} TestModes;
 
 @interface ViewController : GLKViewController
 
