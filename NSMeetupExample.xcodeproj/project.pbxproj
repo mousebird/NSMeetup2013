@@ -18,8 +18,6 @@
 		2B987B2A17B15DE500964797 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B987B2917B15DE500964797 /* Default.png */; };
 		2B987B2C17B15DE500964797 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B987B2B17B15DE500964797 /* Default@2x.png */; };
 		2B987B2E17B15DE500964797 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B987B2D17B15DE500964797 /* Default-568h@2x.png */; };
-		2B987B3017B15DE500964797 /* Shader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 2B987B2F17B15DE500964797 /* Shader.fsh */; };
-		2B987B3217B15DE500964797 /* Shader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 2B987B3117B15DE500964797 /* Shader.vsh */; };
 		2B987B3517B15DE500964797 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B987B3417B15DE500964797 /* ViewController.m */; };
 		2B987B3817B15DE500964797 /* ViewController_iPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2B987B3617B15DE500964797 /* ViewController_iPhone.xib */; };
 		2B987B3B17B15DE500964797 /* ViewController_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2B987B3917B15DE500964797 /* ViewController_iPad.xib */; };
@@ -41,8 +39,6 @@
 		2B987B2917B15DE500964797 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		2B987B2B17B15DE500964797 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		2B987B2D17B15DE500964797 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
-		2B987B2F17B15DE500964797 /* Shader.fsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = Shader.fsh; path = Shaders/Shader.fsh; sourceTree = "<group>"; };
-		2B987B3117B15DE500964797 /* Shader.vsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = Shader.vsh; path = Shaders/Shader.vsh; sourceTree = "<group>"; };
 		2B987B3317B15DE500964797 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		2B987B3417B15DE500964797 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		2B987B3717B15DE500964797 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ViewController_iPhone.xib; sourceTree = "<group>"; };
@@ -99,8 +95,6 @@
 			children = (
 				2B987B2617B15DE500964797 /* AppDelegate.h */,
 				2B987B2717B15DE500964797 /* AppDelegate.m */,
-				2B987B2F17B15DE500964797 /* Shader.fsh */,
-				2B987B3117B15DE500964797 /* Shader.vsh */,
 				2B987B3317B15DE500964797 /* ViewController.h */,
 				2B987B3417B15DE500964797 /* ViewController.m */,
 				2B987B3617B15DE500964797 /* ViewController_iPhone.xib */,
@@ -179,8 +173,6 @@
 				2B987B2A17B15DE500964797 /* Default.png in Resources */,
 				2B987B2C17B15DE500964797 /* Default@2x.png in Resources */,
 				2B987B2E17B15DE500964797 /* Default-568h@2x.png in Resources */,
-				2B987B3017B15DE500964797 /* Shader.fsh in Resources */,
-				2B987B3217B15DE500964797 /* Shader.vsh in Resources */,
 				2B987B3817B15DE500964797 /* ViewController_iPhone.xib in Resources */,
 				2B987B3B17B15DE500964797 /* ViewController_iPad.xib in Resources */,
 			);
