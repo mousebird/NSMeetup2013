@@ -192,7 +192,7 @@
     texture = [GLKTextureLoader textureWithContentsOfFile:filePath options:nil error:&error];
     
     // A single cube, centered at the origin
-    float origin[3] = {0,0,0};
+    float origin[3] = {0,0.5,0};
     float size[3] = {0.5,0.5,0.5};
     FlexiVertexBuffer *flexiBuffer = [[FlexiVertexBuffer alloc] init];
     [flexiBuffer addSphereAt:origin sized:size];
@@ -201,7 +201,8 @@
     // This works because there's only the one.
     if (texture)
     {
-        self.effect.texture2d0.envMode = GLKTextureEnvModeReplace;
+        self.effect.texture2d0.envMode = GLKTextureEnvModeModulate;
+        self.effect.light0.diffuseColor = GLKVector4Make(1.0f, 1.0f, 1.0f, 1.0f);
         self.effect.texture2d0.target = GLKTextureTarget2D;
         self.effect.texture2d0.name = texture.name;
     }

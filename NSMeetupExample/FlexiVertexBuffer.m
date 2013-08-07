@@ -128,7 +128,7 @@ static const int LongitudeSample=20,LatitudeSample=10;
 
             // Scale the coordinate and save it off
             float *thisCoord = &coords[3*(iy*LongitudeSample+ix)];
-            thisCoord[0] = coord[0]*size[0];  thisCoord[1] = coord[1]*size[1];  thisCoord[2] = coord[2]*size[2];
+            thisCoord[0] = coord[0]*size[0]+org[0];  thisCoord[1] = coord[1]*size[1]+org[1];  thisCoord[2] = coord[2]*size[2]+org[2];
             
             // And texture coordinates
             float texCoord[2];
