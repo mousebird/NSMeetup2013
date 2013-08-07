@@ -39,7 +39,13 @@
                      @{@"name": @"FlexiVertexBuffer - Body",
                        @"url": @"https://gist.github.com/mousebird/6170271.js"},
                      @{@"name": @"ViewController - Full",
-                       @"url": @"https://gist.github.com/mousebird/6170317.js"}
+                       @"url": @"https://gist.github.com/mousebird/6170317.js"},
+                     @{@"name": @"FlexiVertexBuffer - Sphere",
+                       @"url": @"https://gist.github.com/mousebird/6179398.js"},
+                     @{@"name": @"SimpleGLObject - Sphere",
+                       @"url": @"https://gist.github.com/mousebird/6179433.js"},
+                     @{@"name": @"View Controller - Sphere",
+                       @"url": @"https://gist.github.com/mousebird/6179430.js"}
                      ];
 }
 

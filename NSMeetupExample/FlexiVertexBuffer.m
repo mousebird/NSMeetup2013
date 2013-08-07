@@ -131,11 +131,9 @@ static const int LongitudeSample=20,LatitudeSample=10;
             thisCoord[0] = coord[0]*size[0]+org[0];  thisCoord[1] = coord[1]*size[1]+org[1];  thisCoord[2] = coord[2]*size[2]+org[2];
             
             // And texture coordinates
-            float texCoord[2];
+            float *texCoord = &texCoords[2*(iy*LongitudeSample+ix)];
             texCoord[0] = ix/(float)(LongitudeSample-1);
             texCoord[1] = iy/(float)(LatitudeSample-1);
-            float *thisTexCoord = &texCoords[2*(iy*LongitudeSample+ix)];
-            thisTexCoord[0] = texCoord[0];  thisTexCoord[1] = texCoord[1];
         }
     }
     
