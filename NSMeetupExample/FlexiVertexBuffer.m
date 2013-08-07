@@ -2,8 +2,7 @@
 //  FlexiVertexBuffer.m
 //  NSMeetupExample
 //
-//  Created by Steve Gifford on 8/6/13.
-//  Copyright (c) 2013 mousebird consulting. All rights reserved.
+//  Created by sjg@mousebirdconsulting.com on 8/6/13.
 //
 
 #import "FlexiVertexBuffer.h"
@@ -74,6 +73,7 @@ GLfloat gCubeVertexData[216] =
     return self;
 }
 
+// Add a cube at the given location with the given scale
 - (void)addCubeAt:(float *)center sized:(float *)size
 {
     // Work through the 36 vertices
@@ -92,6 +92,27 @@ GLfloat gCubeVertexData[216] =
     }
     _vertexSize = 24;
     _numVertices += 36;
+}
+
+// Set up the vertex buffer we need to draw these triangles
+- (SimpleGLObject *)makeSimpleGLObject
+{
+    GLuint vertexBuffer;
+    
+    // We create the vertex buffer and fill it with data right here
+    glGenBuffers(1, &vertexBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+    glBufferData(GL_ARRAY_BUFFER, [_vertices length], [_vertices bytes], GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    
+    // We'll keep track of the buffers and number of triangles here
+    SimpleGLObject *glObject = [[SimpleGLObject alloc] init];
+    glObject.vertexBuffer = vertexBuffer;
+    glObject.vertexArray = 0;
+    glObject.vertexSize = _vertexSize;
+    glObject.numVertices = _numVertices;
+    
+    return glObject;
 }
 
 @end

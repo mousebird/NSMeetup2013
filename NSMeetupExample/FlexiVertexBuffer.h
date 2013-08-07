@@ -2,11 +2,11 @@
 //  FlexiVertexBuffer.h
 //  NSMeetupExample
 //
-//  Created by Steve Gifford on 8/6/13.
-//  Copyright (c) 2013 mousebird consulting. All rights reserved.
+//  Created by sjg@mousebirdconsulting.com on 8/6/13.
 //
 
 #import <UIKit/UIKit.h>
+#import "SimpleGLObject.h"
 
 @interface FlexiVertexBuffer : NSObject
 
@@ -25,5 +25,8 @@
 
 // Interleaved vertex data
 @property NSMutableData *vertices;
+
+// Create a GL Object and its associated buffer from a flexi buffer
+- (SimpleGLObject *)makeSimpleGLObject;
 
 @end

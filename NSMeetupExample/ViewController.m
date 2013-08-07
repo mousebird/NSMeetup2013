@@ -2,17 +2,16 @@
 //  ViewController.m
 //  NSMeetupExample
 //
-//  Created by Steve Gifford on 8/6/13.
-//  Copyright (c) 2013 mousebird consulting. All rights reserved.
+//  Created by sjg@mousebirdconsulting.com on 8/6/13.
 //
 
 #import "ViewController.h"
 #import "SimpleGLObject.h"
 #import "FlexiVertexBuffer.h"
 
-#define BUFFER_OFFSET(i) ((char *)NULL + (i))
-
-@interface ViewController () {
+@interface ViewController ()
+{
+    // Rotation applied to geometry.  Changes over time.
     float _rotation;
     
     // These are the objects we're drawing
@@ -21,11 +20,12 @@
     // EAGLContext used by the other thread;
     EAGLContext *otherContext;
 }
-@property (strong, nonatomic) EAGLContext *context;
-@property (strong, nonatomic) GLKBaseEffect *effect;
 
-- (void)setupGL;
-- (void)tearDownGL;
+// The OpenGL ES2 rendering context
+@property (strong, nonatomic) EAGLContext *context;
+
+// A GLKit effect we'll use for lighting and transforms
+@property (strong, nonatomic) GLKBaseEffect *effect;
 
 @end
 
@@ -37,9 +37,8 @@
     
     self.context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
 
-    if (!self.context) {
+    if (!self.context)
         NSLog(@"Failed to create ES context");
-    }
     
     GLKView *view = (GLKView *)self.view;
     view.context = self.context;
@@ -59,77 +58,17 @@
     }
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-
-    if ([self isViewLoaded] && ([[self view] window] == nil)) {
-        self.view = nil;
-        
-        [self tearDownGL];
-        
-        if ([EAGLContext currentContext] == self.context) {
-            [EAGLContext setCurrentContext:nil];
-        }
-        self.context = nil;
-    }
-}
-
-// Set up the vertex buffer we need to draw these triangles
-- (SimpleGLObject *)makeObjectFromFlexiBuffer:(FlexiVertexBuffer *)flexiBuffer
-{
-    GLuint vertexBuffer;
-
-    // We create the vertex buffer and fill it with data right here
-    glGenBuffers(1, &vertexBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, [flexiBuffer.vertices length], [flexiBuffer.vertices bytes], GL_STATIC_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    
-    // We'll keep track of the buffers and number of triangles here
-    SimpleGLObject *glObject = [[SimpleGLObject alloc] init];
-    glObject.vertexBuffer = vertexBuffer;
-    glObject.vertexArray = 0;
-    glObject.vertexSize = flexiBuffer.vertexSize;
-    glObject.numVertices = flexiBuffer.numVertices;
-    
-    return glObject;
-}
-
-// Set up the vertex array (note this can only be done on the main thread)
-- (void)makeVertexArrayForObject:(SimpleGLObject *)glObj
-{
-    GLuint vertexArray;
-    
-    // Create a vertex array object and set up its internal state
-    glGenVertexArraysOES(1, &vertexArray);
-    glBindVertexArrayOES(vertexArray);
-    
-    // Everything in this block is work you'd normally have to do in the rendering loop.
-    // A vertex array object encapsulates this for you
-    {
-        glBindBuffer(GL_ARRAY_BUFFER, glObj.vertexBuffer);
-        
-        glEnableVertexAttribArray(GLKVertexAttribPosition);
-        glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, glObj.vertexSize, BUFFER_OFFSET(0));
-        glEnableVertexAttribArray(GLKVertexAttribNormal);
-        glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, glObj.vertexSize, BUFFER_OFFSET(12));
-    }
-    
-    glBindVertexArrayOES(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glObj.vertexArray = vertexArray;
-}
-
 // Create a single cube, much like the Apple test case
 - (void)setupSingleCube
 {
     // A single cube, centered at the origin
     float origin[3] = {0,0,0};
     float size[3] = {0.75,0.75,0.75};
-    FlexiVertexBuffer *flexiBuffer = [FlexiVertexBuffer BufferWithCubeAt:origin sized:size];
+    FlexiVertexBuffer *flexiBuffer = [FlexiVertexBuffer
+                                      BufferWithCubeAt:origin
+                                      sized:size];
  
-    SimpleGLObject *glObject = [self makeObjectFromFlexiBuffer:flexiBuffer];
+    SimpleGLObject *glObject = [flexiBuffer makeSimpleGLObject];
     [_glObjects addObject:glObject];
 }
 
@@ -142,9 +81,11 @@
         float origin[3],size[3];
         origin[0] = drand48();  origin[1] = drand48();  origin[2] = drand48();
         size[0] = size[1] = size[2] = drand48()/20.0;
-        FlexiVertexBuffer *flexiBuffer = [FlexiVertexBuffer BufferWithCubeAt:origin sized:size];
+        FlexiVertexBuffer *flexiBuffer = [FlexiVertexBuffer
+                                          BufferWithCubeAt:origin
+                                          sized:size];
         
-        SimpleGLObject *glObject = [self makeObjectFromFlexiBuffer:flexiBuffer];
+        SimpleGLObject *glObject = [flexiBuffer makeSimpleGLObject];
         [_glObjects addObject:glObject];
     }
 }
@@ -167,7 +108,7 @@
         // If the buffer gets too big, flush it out
         if (flexiBuffer.numVertices > 32768)
         {
-            SimpleGLObject *glObject = [self makeObjectFromFlexiBuffer:flexiBuffer];
+            SimpleGLObject *glObject = [flexiBuffer makeSimpleGLObject];
             @synchronized(_glObjects)
             {
                 [_glObjects addObject:glObject];
@@ -180,7 +121,7 @@
     // Flush anything left over
     if (flexiBuffer.numVertices > 0)
     {
-        SimpleGLObject *glObject = [self makeObjectFromFlexiBuffer:flexiBuffer];
+        SimpleGLObject *glObject = [flexiBuffer makeSimpleGLObject];
         @synchronized(_glObjects)
         {
             [_glObjects addObject:glObject];
@@ -196,13 +137,17 @@
     [self setupManyCubesFewBuffers:numCubes];
     
     if (numTimes > 0)
-        [self performSelector:@selector(addCubesEverySoOften:) withObject:@[@(numCubes),@(numTimes-1)] afterDelay:1.0];
+        [self performSelector:@selector(addCubesEverySoOften:)
+                   withObject:@[@(numCubes),@(numTimes-1)]
+                   afterDelay:1.0];
 }
 
 // Kick off adding cubes every second
 - (void)setupMeteredCubes:(int)numCubes times:(int)numTimes
 {
-    [self performSelector:@selector(addCubesEverySoOften:) withObject:@[@(numCubes),@(numTimes)] afterDelay:1.0];
+    [self performSelector:@selector(addCubesEverySoOften:)
+               withObject:@[@(numCubes),@(numTimes)]
+               afterDelay:1.0];
 }
 
 // Kick off adding cubes every second, but on a different thread
@@ -210,7 +155,8 @@
 {
     // Make ourselves a new OpenGL ES context before we kick off the thread
     // Notice that it uses the sharegroup from the
-    otherContext = [[EAGLContext alloc] initWithAPI:self.context.API sharegroup:self.context.sharegroup];
+    otherContext = [[EAGLContext alloc] initWithAPI:self.context.API
+                                         sharegroup:self.context.sharegroup];
     
     // Kick off the work
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
@@ -280,12 +226,7 @@
     
     // Tear down the buffers
     for (SimpleGLObject *glObject in _glObjects)
-    {
-        GLuint vertexBuffer = glObject.vertexBuffer;
-        GLuint vertexArray = glObject.vertexArray;
-        glDeleteVertexArraysOES(1, &vertexArray);
-        glDeleteBuffers(1, &vertexBuffer);
-    }
+        [glObject tearDownGL];
     [_glObjects removeAllObjects];
     
     self.effect = nil;
@@ -295,11 +236,13 @@
 
 - (void)update
 {
+    // Set up the projection matrix
     float aspect = fabsf(self.view.bounds.size.width / self.view.bounds.size.height);
-    GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(65.0f), aspect, 0.1f, 100.0f);
-    
+    GLKMatrix4 projectionMatrix =
+            GLKMatrix4MakePerspective(GLKMathDegreesToRadians(65.0f), aspect, 0.1f, 100.0f);
     self.effect.transform.projectionMatrix = projectionMatrix;
     
+    // Now the model matrix (for rotating the model)
     GLKMatrix4 baseModelViewMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, -1.5f);
     baseModelViewMatrix = GLKMatrix4Rotate(baseModelViewMatrix, _rotation, 0.0f, 1.0f, 0.0f);
     
@@ -326,7 +269,7 @@
             // See if the vertex array has been built
             // We only need to do this once, but it has to be here
             if (glObject.vertexArray == 0)
-                [self makeVertexArrayForObject:glObject];
+                [glObject makeVertexArray];
             
             glBindVertexArrayOES(glObject.vertexArray);
             

@@ -2,8 +2,7 @@
 //  SimpleGLObject.h
 //  NSMeetupExample
 //
-//  Created by Steve Gifford on 8/6/13.
-//  Copyright (c) 2013 mousebird consulting. All rights reserved.
+//  Created by sjg@mousebirdconsulting.com on 8/6/13.
 //
 
 #import <UIKit/UIKit.h>
@@ -24,5 +23,11 @@
 
 // Size of the vertices
 @property GLuint vertexSize;
+
+// Set up the vertex array object.  Only on the main thread.
+- (void)makeVertexArray;
+
+// Clean up objects in OpenGL ES context
+- (void)tearDownGL;
 
 @end
