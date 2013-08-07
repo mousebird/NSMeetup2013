@@ -24,6 +24,7 @@
 		2B987B4417B169C400964797 /* SimpleGLObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B987B4317B169C400964797 /* SimpleGLObject.m */; };
 		2B987B4717B16C3000964797 /* FlexiVertexBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B987B4617B16C3000964797 /* FlexiVertexBuffer.m */; };
 		2B987B4B17B178CB00964797 /* StartupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B987B4A17B178CB00964797 /* StartupViewController.m */; };
+		2B987B5017B2E5B400964797 /* NaturalEarth.tif in Resources */ = {isa = PBXBuildFile; fileRef = 2B987B4F17B2E5B400964797 /* NaturalEarth.tif */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,6 +53,7 @@
 		2B987B4617B16C3000964797 /* FlexiVertexBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlexiVertexBuffer.m; sourceTree = "<group>"; };
 		2B987B4917B178CB00964797 /* StartupViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StartupViewController.h; sourceTree = "<group>"; };
 		2B987B4A17B178CB00964797 /* StartupViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StartupViewController.m; sourceTree = "<group>"; };
+		2B987B4F17B2E5B400964797 /* NaturalEarth.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = NaturalEarth.tif; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,6 +104,7 @@
 		2B987B1D17B15DE500964797 /* NSMeetupExample */ = {
 			isa = PBXGroup;
 			children = (
+				2B987B4E17B2E5A700964797 /* Assets */,
 				2B987B4817B16C3F00964797 /* OpenGL ES Helpers */,
 				2B987B2617B15DE500964797 /* AppDelegate.h */,
 				2B987B2717B15DE500964797 /* AppDelegate.m */,
@@ -139,6 +142,14 @@
 				2B987B4617B16C3000964797 /* FlexiVertexBuffer.m */,
 			);
 			name = "OpenGL ES Helpers";
+			sourceTree = "<group>";
+		};
+		2B987B4E17B2E5A700964797 /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				2B987B4F17B2E5B400964797 /* NaturalEarth.tif */,
+			);
+			name = Assets;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -198,6 +209,7 @@
 				2B987B2E17B15DE500964797 /* Default-568h@2x.png in Resources */,
 				2B987B3817B15DE500964797 /* ViewController_iPhone.xib in Resources */,
 				2B987B3B17B15DE500964797 /* ViewController_iPad.xib in Resources */,
+				2B987B5017B2E5B400964797 /* NaturalEarth.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

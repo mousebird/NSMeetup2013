@@ -24,6 +24,9 @@
 // Size of the vertices
 @property GLuint vertexSize;
 
+// Set if there are texture coordinates
+@property bool hasTextureCoords;
+
 // Set up the vertex array object.  Only on the main thread.
 - (void)makeVertexArray;
 

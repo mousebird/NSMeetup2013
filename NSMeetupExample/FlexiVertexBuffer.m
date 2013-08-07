@@ -90,8 +90,86 @@ GLfloat gCubeVertexData[216] =
         [_vertices appendBytes:pos length:sizeof(float)*3];
         [_vertices appendBytes:norm length:sizeof(float)*3];
     }
-    _vertexSize = 24;
+    
+    // Coordinates + Normals
+    _vertexSize = 3*sizeof(float)+3*sizeof(float);
     _numVertices += 36;
+}
+
+// Number of samples in each direction
+static const int LongitudeSample=20,LatitudeSample=10;
+
+- (void)addSphereAt:(float *)org sized:(float *)size
+{
+    // We'll generate the coordinates and normals ahead of time
+    float coords[3*LongitudeSample*LatitudeSample];
+    float norms[3*LongitudeSample*LatitudeSample];
+    float texCoords[2*LongitudeSample*LatitudeSample];
+    
+    // Work our way around the equator, building vertices
+    int ix=0;
+    for (float lon=-180.0;ix<LongitudeSample;lon+=360.0/(LongitudeSample-1),ix++)
+    {
+        int iy=0;
+        // Run from the south pole to the north
+        for (float lat=-90.0;iy<LatitudeSample;lat+=180.0/(LatitudeSample-1),iy++)
+        {
+            // Generate a coordinate on the unit sphere
+            float coord[3];
+            float z = sinf(lat/180.0*M_PI);
+            float rad = sqrtf(1.0-z*z);
+            coord[0] = rad*cosf(lon/180.0*M_PI);
+            coord[1] = rad*sinf(lon/180.0*M_PI);
+            coord[2] = z;
+            
+            // The normal is the coordinate (on the unit sphere)
+            float *thisNorm = &norms[3*(iy*LongitudeSample+ix)];
+            thisNorm[0] = coord[0];  thisNorm[1] = coord[1];  thisNorm[2] = coord[2];
+
+            // Scale the coordinate and save it off
+            float *thisCoord = &coords[3*(iy*LongitudeSample+ix)];
+            thisCoord[0] = coord[0]*size[0];  thisCoord[1] = coord[1]*size[1];  thisCoord[2] = coord[2]*size[2];
+            
+            // And texture coordinates
+            float texCoord[2];
+            texCoord[0] = ix/(float)(LongitudeSample-1);
+            texCoord[1] = iy/(float)(LatitudeSample-1);
+            float *thisTexCoord = &texCoords[2*(iy*LongitudeSample+ix)];
+            thisTexCoord[0] = texCoord[0];  thisTexCoord[1] = texCoord[1];
+        }
+    }
+    
+    // Now for the triangles, we need two per sample
+    for (int ix=0;ix<LongitudeSample-1;ix++)
+        for (int iy=0;iy<LatitudeSample-1;iy++)
+        {
+            // Lower left triangle
+            [_vertices appendBytes:&coords[3*(iy*LongitudeSample+ix)] length:sizeof(float)*3];
+            [_vertices appendBytes:&norms[3*(iy*LongitudeSample+ix)] length:sizeof(float)*3];
+            [_vertices appendBytes:&texCoords[2*(iy*LongitudeSample+ix)] length:sizeof(float)*2];
+            [_vertices appendBytes:&coords[3*(iy*LongitudeSample+ix+1)] length:sizeof(float)*3];
+            [_vertices appendBytes:&norms[3*(iy*LongitudeSample+ix+1)] length:sizeof(float)*3];
+            [_vertices appendBytes:&texCoords[2*(iy*LongitudeSample+ix+1)] length:sizeof(float)*2];
+            [_vertices appendBytes:&coords[3*((iy+1)*LongitudeSample+ix)] length:sizeof(float)*3];
+            [_vertices appendBytes:&norms[3*((iy+1)*LongitudeSample+ix)] length:sizeof(float)*3];
+            [_vertices appendBytes:&texCoords[2*((iy+1)*LongitudeSample+ix)] length:sizeof(float)*2];
+
+            // Upper right triangle
+            [_vertices appendBytes:&coords[3*(iy*LongitudeSample+ix+1)] length:sizeof(float)*3];
+            [_vertices appendBytes:&norms[3*(iy*LongitudeSample+ix+1)] length:sizeof(float)*3];
+            [_vertices appendBytes:&texCoords[2*(iy*LongitudeSample+ix+1)] length:sizeof(float)*2];
+            [_vertices appendBytes:&coords[3*((iy+1)*LongitudeSample+ix+1)] length:sizeof(float)*3];
+            [_vertices appendBytes:&norms[3*((iy+1)*LongitudeSample+ix+1)] length:sizeof(float)*3];
+            [_vertices appendBytes:&texCoords[2*((iy+1)*LongitudeSample+ix+1)] length:sizeof(float)*2];
+            [_vertices appendBytes:&coords[3*((iy+1)*LongitudeSample+ix)] length:sizeof(float)*3];
+            [_vertices appendBytes:&norms[3*((iy+1)*LongitudeSample+ix)] length:sizeof(float)*3];
+            [_vertices appendBytes:&texCoords[2*((iy+1)*LongitudeSample+ix)] length:sizeof(float)*2];
+        }
+
+    // Coordintes + Normals + Texture coordinates
+    _vertexSize = 3*sizeof(float)+ 3*sizeof(float)+ 2*sizeof(float);
+    _hasTextureCoords = true;
+    _numVertices += (LongitudeSample-1)*(LatitudeSample-1)*2*3;
 }
 
 // Set up the vertex buffer we need to draw these triangles
@@ -111,6 +189,7 @@ GLfloat gCubeVertexData[216] =
     glObject.vertexArray = 0;
     glObject.vertexSize = _vertexSize;
     glObject.numVertices = _numVertices;
+    glObject.hasTextureCoords = _hasTextureCoords;
     
     return glObject;
 }

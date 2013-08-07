@@ -17,7 +17,10 @@
 // Add a cube to the existing vertices
 - (void)addCubeAt:(float *)org sized:(float *)size;
 
-// Vertices are always 24 bytes (3 floats for location + 3 floats for normal)
+// Add a sphere to the existing vertices
+- (void)addSphereAt:(float *)org sized:(float *)size;
+
+// Vertices are coordinates + normals + (optional) texture coordinates
 @property GLuint vertexSize;
 
 // Number of vertices
@@ -25,6 +28,9 @@
 
 // Interleaved vertex data
 @property NSMutableData *vertices;
+
+// Set if we've got texture coordinates going on
+@property bool hasTextureCoords;
 
 // Create a GL Object and its associated buffer from a flexi buffer
 - (SimpleGLObject *)makeSimpleGLObject;

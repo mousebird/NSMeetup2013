@@ -19,6 +19,9 @@
     
     // EAGLContext used by the other thread;
     EAGLContext *otherContext;
+    
+    // An optional texture
+    GLKTextureInfo *texture;
 }
 
 // The OpenGL ES2 rendering context
@@ -180,6 +183,33 @@
                    });
 }
 
+// Create a single sphere, with texture
+- (void)setupTexturedSphere
+{
+    // We need an earth texture
+    NSError *error = nil;
+    NSString *filePath = [[NSBundle mainBundle] pathForResource:@"NaturalEarth" ofType:@"tif"];
+    texture = [GLKTextureLoader textureWithContentsOfFile:filePath options:nil error:&error];
+    
+    // A single cube, centered at the origin
+    float origin[3] = {0,0,0};
+    float size[3] = {0.5,0.5,0.5};
+    FlexiVertexBuffer *flexiBuffer = [[FlexiVertexBuffer alloc] init];
+    [flexiBuffer addSphereAt:origin sized:size];
+    
+    // If we got a valid texture, we'll use that
+    // This works because there's only the one.
+    if (texture)
+    {
+        self.effect.texture2d0.envMode = GLKTextureEnvModeReplace;
+        self.effect.texture2d0.target = GLKTextureTarget2D;
+        self.effect.texture2d0.name = texture.name;
+    }
+    
+    SimpleGLObject *glObject = [flexiBuffer makeSimpleGLObject];
+    [_glObjects addObject:glObject];    
+}
+
 - (void)setupGL
 {
     [EAGLContext setCurrentContext:self.context];
@@ -214,6 +244,9 @@
         case MeteredCubesMultiThread:
             // Add 3000 cubes 8 times on another thread
             [self setupMultithreadedMeteredCubes:3000 times:8];
+            break;
+        case SphereMode:
+            [self setupTexturedSphere];
             break;
         default:
             break;

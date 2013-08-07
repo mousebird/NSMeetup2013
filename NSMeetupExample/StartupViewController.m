@@ -118,6 +118,9 @@
             case MeteredCubesMultiThread:
                 cell.textLabel.text = @"Add cubes during rendering - on another thread";
                 break;
+            case SphereMode:
+                cell.textLabel.text = @"Textured sphere";
+                break;
             default:
                 break;
         }
